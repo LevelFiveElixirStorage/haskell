@@ -1,6 +1,6 @@
 guard :shell do
   watch /.*\.l?hs$/ do |m|
-    `runghc #{m[0]}`
+    `runghc #{m[0]} < seeds/1`
   end
 end
 
