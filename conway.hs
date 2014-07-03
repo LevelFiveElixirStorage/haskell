@@ -1,11 +1,25 @@
+
 module Main (main) where
+
+import Control.Concurrent (threadDelay)
 
 type Board = [[Cell]]
 data Cell = Alive | Dead
 
 main :: IO()
 main = do s <- getContents
-          mapM_ putStrLn(take 10 $  (iterate tick s))
+          life 0 (iterate tick s)
+
+life :: Int -> [String] -> IO()
+life g (h:r) =
+  if head r /= h
+  then do
+      putStrLn $ "Generation " ++ (show g)
+      putStrLn h
+      threadDelay 500000
+      life (g+1) r
+  else do
+    putStrLn h
 
 tick :: String -> String
 tick input = showBoard $ update $ readBoard input
@@ -54,14 +68,14 @@ showBoard :: Board -> String
 showBoard b = unlines $ map (map showCell) b
 
 showCell :: Cell -> Char
-showCell Alive = 'X'
+showCell Alive = '█'
 showCell Dead  = ' '
 
 readBoard :: String -> Board
 readBoard s = map (map readCell) (lines s)
 
 readCell :: Char -> Cell
-readCell 'X' = Alive
+readCell '█' = Alive
 readCell  _  = Dead
 
 -- Applies function f to each cell in the board
